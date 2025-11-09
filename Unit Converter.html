@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Unit Converter</title>
+  <style>
+    body {
+      font-family: "Poppins", sans-serif;
+      background: linear-gradient(135deg, #e0f3ff, #ffffff);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+    }
+
+    .container {
+      background: #fff;
+      padding: 30px 25px;
+      border-radius: 16px;
+      box-shadow: 0 6px 18px rgba(0, 123, 255, 0.2);
+      max-width: 420px;
+      width: 90%;
+      text-align: center;
+      transition: all 0.3s ease;
+    }
+
+    .container:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 24px rgba(0, 123, 255, 0.25);
+    }
+
+    h2 {
+      color: #007bff;
+      margin-bottom: 20px;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 12px;
+      margin-top: 12px;
+      font-size: 16px;
+      border-radius: 10px;
+      border: 1px solid #ccc;
+      transition: 0.2s;
+    }
+
+    input:focus, select:focus {
+      border-color: #007bff;
+      box-shadow: 0 0 4px rgba(0, 123, 255, 0.3);
+      outline: none;
+    }
+
+    button {
+      margin-top: 20px;
+      padding: 12px 22px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 16px;
+      width: 100%;
+      transition: all 0.2s ease;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+      transform: scale(1.03);
+    }
+
+    .result {
+      margin-top: 20px;
+      font-size: 18px;
+      font-weight: 600;
+      color: #333;
+    }
+
+    .category-select {
+      margin-bottom: 15px;
+      background-color: #f8f9fa;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Smart Unit Converter</h2>
+    
+    <select id="category" class="category-select" onchange="updateUnits()">
+      <option value="length">Length</option>
+      <option value="weight">Weight</option>
+      <option value="temperature">Temperature</option>
+    </select>
+
+    <input type="number" id="inputValue" placeholder="Enter value" />
+
+    <select id="fromUnit"></select>
+    <select id="toUnit"></select>
+
+    <button onclick="convertUnits()">Convert</button>
+    <div class="result" id="resultBox"></div>
+  </div>
+
+  <script>
+    const units = {
+      length: {
+        meters: 1,
+        kilometers: 1000,
+        feet: 0.3048,
+        inches: 0.0254,
+        miles: 1609.34
+      },
+      weight: {
+        grams: 1,
+        kilograms: 1000,
+        pounds: 453.592,
+        ounces: 28.3495,
+        tons: 1_000_000
+      },
+      temperature: {
+        celsius: "C",
+        fahrenheit: "F",
+        kelvin: "K"
+      }
+    };
+
+    function updateUnits() {
+      const category = document.getElementById("category").value;
+      const fromSelect = document.getElementById("fromUnit");
+      const toSelect = document.getElementById("toUnit");
+
+      fromSelect.innerHTML = "";
+      toSelect.innerHTML = "";
+
+      Object.keys(units[category]).forEach(unit => {
+        fromSelect.innerHTML += `<option value="${unit}">${capitalize(unit)}</option>`;
+        toSelect.innerHTML += `<option value="${unit}">${capitalize(unit)}</option>`;
+      });
+    }
+
+    function capitalize(word) {
+      return word.charAt(0).toUpperCase() + word.slice(1);
+    }
+
+    function convertUnits() {
+      const value = parseFloat(document.getElementById("inputValue").value);
+      const from = document.getElementById("fromUnit").value;
+      const to = document.getElementById("toUnit").value;
+      const category = document.getElementById("category").value;
+      const resultBox = document.getElementById("resultBox");
+
+      if (isNaN(value)) {
+        resultBox.textContent = "Please enter a valid number.";
+        return;
+      }
+
+      let converted;
+
+      if (category === "temperature") {
+        converted = convertTemperature(value, from, to);
+      } else {
+        const inBase = value * units[category][from];
+        converted = inBase / units[category][to];
+      }
+
+      resultBox.textContent = `${value} ${from} = ${converted.toFixed(4)} ${to}`;
+    }
+
+    function convertTemperature(value, from, to) {
+      if (from === to) return value;
+      let celsius;
+
+      if (from === "fahrenheit") celsius = (value - 32) * 5 / 9;
+      else if (from === "kelvin") celsius = value - 273.15;
+      else celsius = value;
+
+      if (to === "fahrenheit") return celsius * 9 / 5 + 32;
+      if (to === "kelvin") return celsius + 273.15;
+      return celsius;
+    }
+
+    window.onload = updateUnits;
+  </script>
+</body>
+</html>
