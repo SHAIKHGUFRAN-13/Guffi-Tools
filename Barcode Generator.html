@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Barcode Generator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #eef8ff;
+      margin: 0;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .container {
+      max-width: 420px;
+      margin: auto;
+      background: #fff;
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 123, 255, 0.15);
+    }
+
+    h2 {
+      color: #007bff;
+      margin-bottom: 20px;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 10px;
+      font-size: 16px;
+      margin-top: 10px;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      text-align: center;
+    }
+
+    button {
+      margin-top: 15px;
+      padding: 10px 20px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    #barcode {
+      margin-top: 20px;
+    }
+
+    .download-options {
+      margin-top: 15px;
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .download-options button {
+      background-color: #28a745;
+    }
+
+    .download-options button:hover {
+      background-color: #1e7e34;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Barcode Generator</h2>
+    <input type="text" id="barcodeText" placeholder="Enter text or number" autofocus />
+    <button id="generateBtn">Generate Barcode</button>
+    <div id="barcode">
+      <svg id="barcodeSvg"></svg>
+    </div>
+
+    <div class="download-options" style="display:none;" id="downloadBtns">
+      <button onclick="downloadBarcode('svg')">Download SVG</button>
+      <button onclick="downloadBarcode('png')">Download PNG</button>
+    </div>
+  </div>
+
+  <!-- JsBarcode CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
+  <script>
+    const textInput = document.getElementById("barcodeText");
+    const generateBtn = document.getElementById("generateBtn");
+    const downloadBtns = document.getElementById("downloadBtns");
+
+    generateBtn.addEventListener("click", generateBarcode);
+    textInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") generateBarcode();
+    });
+
+    function generateBarcode() {
+      const text = textInput.value.trim();
+
+      if (text === "") {
+        alert("Please enter some text or number.");
+        return;
+      }
+
+      JsBarcode("#barcodeSvg", text, {
+        format: "CODE128",
+        lineColor: "#000",
+        width: 2,
+        height: 100,
+        displayValue: true
+      });
+
+      downloadBtns.style.display = "flex";
+    }
+
+    function downloadBarcode(type) {
+      const svg = document.getElementById("barcodeSvg");
+
+      if (type === "svg") {
+        const serializer = new XMLSerializer();
+        const source = serializer.serializeToString(svg);
+        const blob = new Blob([source], { type: "image/svg+xml;charset=utf-8" });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = "barcode.svg";
+        link.click();
+      } else if (type === "png") {
+        const svgData = new XMLSerializer().serializeToString(svg);
+        const canvas = document.createElement("canvas");
+        const ctx = canvas.getContext("2d");
+        const img = new Image();
+        const svgBlob = new Blob([svgData], { type: "image/svg+xml;charset=utf-8" });
+        const url = URL.createObjectURL(svgBlob);
+
+        img.onload = function () {
+          canvas.width = img.width;
+          canvas.height = img.height;
+          ctx.drawImage(img, 0, 0);
+          const pngUrl = canvas.toDataURL("image/png");
+          const link = document.createElement("a");
+          link.href = pngUrl;
+          link.download = "barcode.png";
+          link.click();
+        };
+        img.src = url;
+      }
+    }
+  </script>
+</body>
+</html>
