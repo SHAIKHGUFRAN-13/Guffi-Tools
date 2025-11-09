@@ -1,0 +1,111 @@
+ज़रूर\! यहाँ आपके **रिमूव डुप्लीकेट लाइन्स (Remove Duplicate Lines)** टूल का पूरा कोड है। मैंने आपके दिए गए HTML, CSS, और उस बेहतरीन JavaScript लॉजिक को एक साथ जोड़ दिया है, जिससे यह सीधे आपके ब्राउज़र में काम करेगा।
+
+-----
+
+## 💻 डुप्लीकेट लाइन हटाने का पूरा कोड (Full Code)
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Remove Duplicate Lines Tool</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f0f8ff;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+    }
+
+    .container {
+      background: #fff;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      width: 90%;
+      max-width: 500px;
+      text-align: center;
+    }
+
+    h2 {
+      color: #007bff;
+      margin-bottom: 20px;
+    }
+
+    /* contenteditable div को स्टाइल करना */
+    #textBox {
+      width: 100%;
+      min-height: 150px;
+      padding: 15px;
+      font-size: 16px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      background: #fff;
+      margin-bottom: 15px;
+      box-sizing: border-box;
+      outline: none;
+      text-align: left;
+      /* सुनिश्चित करता है कि नई लाइनें दिखें */
+      white-space: pre-wrap; 
+      overflow-y: auto;
+      resize: vertical;
+    }
+
+    button {
+      padding: 12px 25px;
+      font-size: 16px;
+      border: none;
+      background-color: #007bff;
+      color: white;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-top: 10px;
+      transition: background-color 0.3s;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h2>Remove Duplicate Lines ✂️</h2>
+
+    <div id="textBox" contenteditable="true" placeholder="Paste or type lines here..."></div>
+
+    <button onclick="removeDuplicates()">Remove Duplicates</button>
+  </div>
+
+  <script>
+    function removeDuplicates() {
+      var textBoxElement = document.getElementById("textBox");
+      var content = textBoxElement.innerText;
+      
+      // 1. कंटेंट को नई लाइन के आधार पर ऐरे में विभाजित करें
+      var lines = content.split('\n');
+      
+      // 2. डुप्लीकेट लाइनों को हटाने और अनावश्यक स्पेस को साफ करने के लिए मॉडर्न JavaScript का उपयोग करें
+      // .map(line => line.trim()): हर लाइन के आगे और पीछे के स्पेस हटाता है।
+      // [...new Set(...)]: डुप्लीकेट हटाता है।
+      // .filter(line => line !== ""): अंत में, पूरी तरह से खाली लाइनों को हटाता है।
+      var uniqueLines = [...new Set(lines.map(line => line.trim()))].filter(line => line !== "");
+      
+      // 3. परिणाम को वापस textBox में दिखाएँ
+      textBoxElement.innerText = uniqueLines.join('\n');
+      
+      // वैकल्पिक: उपयोगकर्ता को फीडबैक दें (जैसे कि फोकस वापस इनपुट पर ले जाना)
+      textBoxElement.focus();
+    }
+  </script>
+
+</body>
+</html>
+```
