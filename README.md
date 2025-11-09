@@ -7,13 +7,7 @@ GuffiTools is your complete online toolbox packed with smart, powerful, and easy
 Optimize and edit images in seconds with our image converter, compressor, resizer, and cropper.
 Extract text using Image to Text (OCR) or rotate and flip images effortlessly.
 
-🎥 Video Tools
 
-Handle your video files quickly and efficiently:
-
-Video Converter – Convert videos into popular formats.
-
-Video Compressor – Reduce video file sizes while keeping high quality.
 📄 Document Tools
 
 Simplify your document workflow with tools like PDF to Word, Word to PDF, PDF Compressor, PDF Merger & Splitter, and eSign PDF.
