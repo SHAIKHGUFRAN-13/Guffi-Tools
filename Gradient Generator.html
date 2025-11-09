@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Gradient Generator | Guffi Tools</title>
+  <style>
+    body {
+      font-family: "Poppins", Arial, sans-serif;
+      background: linear-gradient(135deg, #e3f2ff, #f8fbff);
+      padding: 30px;
+      text-align: center;
+      min-height: 100vh;
+    }
+
+    h2 {
+      color: #007bff;
+      margin-bottom: 25px;
+      font-size: 28px;
+      font-weight: 600;
+    }
+
+    .generator-box {
+      background: #ffffff;
+      border-radius: 16px;
+      padding: 25px;
+      max-width: 420px;
+      margin: auto;
+      box-shadow: 0 8px 20px rgba(0, 123, 255, 0.1);
+      transition: transform 0.3s ease;
+    }
+
+    .generator-box:hover {
+      transform: translateY(-4px);
+    }
+
+    input[type="color"],
+    select {
+      margin: 10px 5px;
+      padding: 10px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      width: 45%;
+      cursor: pointer;
+    }
+
+    .preview {
+      margin-top: 20px;
+      height: 160px;
+      border-radius: 10px;
+      border: 2px solid #007bff;
+      animation: gradientMove 4s ease infinite alternate;
+    }
+
+    @keyframes gradientMove {
+      0% { filter: brightness(1); }
+      100% { filter: brightness(1.15); }
+    }
+
+    .css-output {
+      margin-top: 15px;
+      font-weight: bold;
+      color: #333;
+      background: #f7faff;
+      padding: 10px;
+      border-radius: 8px;
+      word-break: break-word;
+      font-size: 15px;
+    }
+
+    button {
+      background-color: #007bff;
+      color: white;
+      border: none;
+      padding: 10px 18px;
+      margin-top: 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background 0.2s;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    .btn-group {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    footer {
+      margin-top: 25px;
+      font-size: 14px;
+      color: #777;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>🎨 CSS Gradient Generator</h2>
+
+  <div class="generator-box">
+    <div>
+      <input type="color" id="color1" value="#ff7f50" />
+      <input type="color" id="color2" value="#1e90ff" />
+    </div>
+
+    <div>
+      <select id="direction">
+        <option value="to right">Left to Right</option>
+        <option value="to left">Right to Left</option>
+        <option value="to bottom">Top to Bottom</option>
+        <option value="to top">Bottom to Top</option>
+        <option value="to top left">Bottom Right to Top Left</option>
+        <option value="to bottom right">Top Left to Bottom Right</option>
+      </select>
+    </div>
+
+    <div class="btn-group">
+      <button onclick="generateGradient()">Generate</button>
+      <button onclick="randomGradient()">🎲 Random</button>
+      <button onclick="copyCSS()">📋 Copy CSS</button>
+    </div>
+
+    <div class="preview" id="previewBox"></div>
+    <div class="css-output" id="cssCode">CSS Code: -</div>
+  </div>
+
+  <footer>Made with 💙 by Guffi Tools</footer>
+
+  <script>
+    function generateGradient() {
+      const color1 = document.getElementById("color1").value;
+      const color2 = document.getElementById("color2").value;
+      const direction = document.getElementById("direction").value;
+
+      const gradient = `linear-gradient(${direction}, ${color1}, ${color2})`;
+
+      const previewBox = document.getElementById("previewBox");
+      previewBox.style.background = gradient;
+
+      const cssOutput = document.getElementById("cssCode");
+      cssOutput.textContent = `background: ${gradient};`;
+    }
+
+    function randomColor() {
+      const letters = '0123456789ABCDEF';
+      let color = '#';
+      for (let i = 0; i < 6; i++) {
+        color += letters[Math.floor(Math.random() * 16)];
+      }
+      return color;
+    }
+
+    function randomGradient() {
+      const color1 = randomColor();
+      const color2 = randomColor();
+      const directions = [
+        "to right", "to left", "to bottom", "to top",
+        "to top left", "to bottom right"
+      ];
+      const direction = directions[Math.floor(Math.random() * directions.length)];
+
+      document.getElementById("color1").value = color1;
+      document.getElementById("color2").value = color2;
+      document.getElementById("direction").value = direction;
+
+      generateGradient();
+    }
+
+    function copyCSS() {
+      const cssCode = document.getElementById("cssCode").textContent;
+      navigator.clipboard.writeText(cssCode);
+      const btn = event.target;
+      btn.textContent = "✅ Copied!";
+      setTimeout(() => (btn.textContent = "📋 Copy CSS"), 2000);
+    }
+
+    // Auto-generate on page load
+    window.onload = generateGradient;
+  </script>
+
+</body>
+</html>
