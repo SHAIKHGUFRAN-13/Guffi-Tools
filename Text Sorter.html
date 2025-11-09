@@ -1,0 +1,118 @@
+ज़रूर\! आपके पिछले अनुरोध के आधार पर, यहाँ **टेक्स्ट सॉर्टर (Text Sorter)** का पूरा कोड दिया गया है, जो टेक्स्ट की सभी लाइनों को वर्णानुक्रम (alphabetical order) में व्यवस्थित करता है।
+
+-----
+
+## 💻 टेक्स्ट सॉर्टर (Full Code)
+
+यह कोड इनपुट टेक्स्ट को नई लाइनों (`\n`) के आधार पर विभाजित करता है, खाली लाइनों को हटाता है, और फिर वर्णमाला क्रम में सॉर्ट करके परिणाम को इनपुट बॉक्स में वापस प्रदर्शित करता है।
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Text Sorter Tool</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f0f8ff;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+    }
+
+    .container {
+      background: #fff;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      width: 90%;
+      max-width: 500px;
+      text-align: center;
+    }
+
+    h2 {
+      color: #007bff;
+      margin-bottom: 20px;
+    }
+
+    #textBox {
+      width: 100%;
+      min-height: 150px;
+      padding: 15px;
+      font-size: 16px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      background: #fff;
+      margin-bottom: 15px;
+      box-sizing: border-box;
+      outline: none;
+      text-align: left;
+      white-space: pre-wrap;
+      overflow-y: auto;
+      resize: vertical;
+    }
+
+    button {
+      padding: 12px 25px;
+      font-size: 16px;
+      border: none;
+      background-color: #007bff;
+      color: white;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-top: 10px;
+      transition: background-color 0.3s;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h2>Text Sorter Tool (A-Z) 🔠</h2>
+
+    <div id="textBox" contenteditable="true" placeholder="Enter lines of text here to sort them alphabetically (e.g., Apple, Banana, Cherry)"></div>
+
+    <button onclick="sortText()">Sort Text</button>
+  </div>
+
+  <script>
+    function sortText() {
+      var textBoxElement = document.getElementById("textBox");
+      var content = textBoxElement.innerText.trim();
+      
+      if (content.length === 0) {
+        textBoxElement.innerText = "Please enter some lines of text first.";
+        return;
+      }
+      
+      // 1. टेक्स्ट को लाइनों के आधार पर विभाजित करें
+      var lines = content.split('\n');
+      
+      // 2. फ़िल्टर करें और सॉर्ट करें:
+      var sortedLines = lines
+          // 2a. प्रत्येक लाइन के आगे/पीछे के स्पेस हटाएँ (map)
+          .map(line => line.trim()) 
+          // 2b. खाली लाइनों को हटाएँ (filter)
+          .filter(line => line !== "") 
+          // 2c. वर्णानुक्रम में सॉर्ट करें (sort)
+          .sort(); 
+      
+      // 3. परिणाम को वापस textBox में दिखाएँ
+      textBoxElement.innerText = sortedLines.join('\n');
+      
+      textBoxElement.focus();
+    }
+  </script>
+
+</body>
+</html>
+```
