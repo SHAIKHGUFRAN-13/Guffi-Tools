@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>HEX ⇄ RGB Converter</title>
+  <style>
+    body {
+      font-family: "Poppins", sans-serif;
+      background: #f4faff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 30px;
+      min-height: 100vh;
+    }
+
+    h2 {
+      color: #007bff;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .converter {
+      background: #ffffff;
+      border-radius: 12px;
+      padding: 25px;
+      box-shadow: 0 4px 15px rgba(0, 123, 255, 0.1);
+      width: 100%;
+      max-width: 400px;
+      text-align: center;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 12px;
+      font-size: 16px;
+      margin-bottom: 15px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      text-align: center;
+    }
+
+    button {
+      background-color: #007bff;
+      color: white;
+      padding: 10px 20px;
+      font-size: 16px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      margin: 5px;
+      transition: all 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    .switch {
+      background-color: #17a2b8;
+    }
+
+    .switch:hover {
+      background-color: #117a8b;
+    }
+
+    .result {
+      font-weight: bold;
+      color: #333;
+      margin-top: 15px;
+    }
+
+    .color-preview {
+      width: 60px;
+      height: 40px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      margin: 10px auto;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>HEX ⇄ RGB Converter</h2>
+
+  <div class="converter">
+    <input type="text" id="colorInput" placeholder="Enter HEX or RGB value" />
+    <button id="convertBtn" onclick="convertColor()">Convert</button>
+    <button class="switch" onclick="toggleMode()">Switch to RGB → HEX</button>
+    <div class="color-preview" id="colorPreview"></div>
+    <div class="result" id="resultText">Result: -</div>
+  </div>
+
+  <script>
+    let mode = "hexToRgb"; // default mode
+
+    function toggleMode() {
+      const switchBtn = document.querySelector(".switch");
+      const input = document.getElementById("colorInput");
+      const result = document.getElementById("resultText");
+      const preview = document.getElementById("colorPreview");
+
+      if (mode === "hexToRgb") {
+        mode = "rgbToHex";
+        switchBtn.textContent = "Switch to HEX → RGB";
+        input.placeholder = "Enter RGB value e.g. 255, 87, 51";
+        result.textContent = "Result: -";
+        preview.style.backgroundColor = "transparent";
+      } else {
+        mode = "hexToRgb";
+        switchBtn.textContent = "Switch to RGB → HEX";
+        input.placeholder = "Enter HEX code e.g. #ff5733";
+        result.textContent = "Result: -";
+        preview.style.backgroundColor = "transparent";
+      }
+    }
+
+    function convertColor() {
+      const input = document.getElementById("colorInput").value.trim();
+      const output = document.getElementById("resultText");
+      const preview = document.getElementById("colorPreview");
+
+      if (mode === "hexToRgb") {
+        let hex = input.replace("#", "");
+        if (hex.length === 3) hex = hex.split('').map(c => c + c).join('');
+        if (/^[0-9A-Fa-f]{6}$/.test(hex)) {
+          const r = parseInt(hex.substring(0, 2), 16);
+          const g = parseInt(hex.substring(2, 4), 16);
+          const b = parseInt(hex.substring(4, 6), 16);
+          output.textContent = `RGB: (${r}, ${g}, ${b})`;
+          preview.style.backgroundColor = `rgb(${r}, ${g}, ${b})`;
+        } else {
+          output.textContent = "Invalid HEX code!";
+          preview.style.backgroundColor = "transparent";
+        }
+      } else {
+        const rgbValues = input.split(",").map(v => parseInt(v.trim()));
+        if (rgbValues.length === 3 && rgbValues.every(v => v >= 0 && v <= 255)) {
+          const hex = "#" + rgbValues.map(v => v.toString(16).padStart(2, "0")).join("");
+          output.textContent = `HEX: ${hex}`;
+          preview.style.backgroundColor = `rgb(${rgbValues.join(",")})`;
+        } else {
+          output.textContent = "Invalid RGB format!";
+          preview.style.backgroundColor = "transparent";
+        }
+      }
+    }
+  </script>
+
+</body>
+</html>
