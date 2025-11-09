@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Contrast Checker | Guffi Tools</title>
+  <style>
+    body {
+      font-family: "Poppins", Arial, sans-serif;
+      background: linear-gradient(135deg, #e8f3ff, #f8fbff);
+      padding: 30px;
+      text-align: center;
+      min-height: 100vh;
+    }
+
+    h2 {
+      color: #007bff;
+      margin-bottom: 25px;
+      font-size: 28px;
+      font-weight: 600;
+    }
+
+    .checker-box {
+      background: #ffffff;
+      border-radius: 16px;
+      padding: 25px;
+      max-width: 420px;
+      margin: auto;
+      box-shadow: 0 8px 20px rgba(0, 123, 255, 0.1);
+      transition: transform 0.3s ease;
+    }
+
+    .checker-box:hover {
+      transform: translateY(-3px);
+    }
+
+    .color-selectors {
+      margin-bottom: 15px;
+    }
+
+    label {
+      font-weight: 500;
+      color: #333;
+    }
+
+    input[type="color"] {
+      margin: 10px;
+      width: 120px;
+      height: 50px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      outline: none;
+      transition: transform 0.2s;
+    }
+
+    input[type="color"]:hover {
+      transform: scale(1.05);
+    }
+
+    .preview-box {
+      padding: 25px;
+      margin-top: 20px;
+      border-radius: 12px;
+      font-size: 18px;
+      font-weight: 600;
+      transition: 0.3s;
+    }
+
+    .contrast-result {
+      margin-top: 18px;
+      font-size: 16px;
+      font-weight: 600;
+      color: #333;
+      background: #f4f9ff;
+      padding: 10px;
+      border-radius: 8px;
+    }
+
+    .wcag-result {
+      font-size: 14px;
+      margin-top: 6px;
+      color: #555;
+    }
+
+    button {
+      background-color: #007bff;
+      color: white;
+      border: none;
+      padding: 10px 18px;
+      margin-top: 15px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background 0.2s;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    footer {
+      margin-top: 25px;
+      font-size: 14px;
+      color: #777;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>🌓 Contrast Checker Tool</h2>
+
+  <div class="checker-box">
+    <div class="color-selectors">
+      <label>Text Color</label><br />
+      <input type="color" id="textColor" value="#000000" />
+    </div>
+
+    <div class="color-selectors">
+      <label>Background Color</label><br />
+      <input type="color" id="bgColor" value="#ffffff" />
+    </div>
+
+    <button onclick="checkContrast()">Check Contrast</button>
+
+    <div class="preview-box" id="previewText">Sample Text</div>
+    <div class="contrast-result" id="contrastResult">Contrast Ratio: -</div>
+    <div class="wcag-result" id="wcagLevel">-</div>
+
+    <button onclick="copyContrast()">📋 Copy Ratio</button>
+  </div>
+
+  <footer>Made with 💙 by Guffi Tools</footer>
+
+  <script>
+    function luminance(r, g, b) {
+      const a = [r, g, b].map(v => {
+        v /= 255;
+        return v <= 0.03928
+          ? v / 12.92
+          : Math.pow((v + 0.055) / 1.055, 2.4);
+      });
+      return a[0] * 0.2126 + a[1] * 0.7152 + a[2] * 0.0722;
+    }
+
+    function getRGB(hex) {
+      hex = hex.replace('#', '');
+      if (hex.length === 3) hex = hex.split('').map(c => c + c).join('');
+      const bigint = parseInt(hex, 16);
+      const r = (bigint >> 16) & 255;
+      const g = (bigint >> 8) & 255;
+      const b = bigint & 255;
+      return [r, g, b];
+    }
+
+    function contrastRatio(hex1, hex2) {
+      const [r1, g1, b1] = getRGB(hex1);
+      const [r2, g2, b2] = getRGB(hex2);
+      const lum1 = luminance(r1, g1, b1);
+      const lum2 = luminance(r2, g2, b2);
+      const brightest = Math.max(lum1, lum2);
+      const darkest = Math.min(lum1, lum2);
+      return ((brightest + 0.05) / (darkest + 0.05)).toFixed(2);
+    }
+
+    function wcagLevel(ratio) {
+      ratio = parseFloat(ratio);
+      if (ratio >= 7) return "AAA (Excellent)";
+      if (ratio >= 4.5) return "AA (Good)";
+      if (ratio >= 3) return "AA Large Text Only";
+      return "Fail (Poor)";
+    }
+
+    function checkContrast() {
+      const textColor = document.getElementById("textColor").value;
+      const bgColor = document.getElementById("bgColor").value;
+      const ratio = contrastRatio(textColor, bgColor);
+      const result = document.getElementById("contrastResult");
+      const wcag = document.getElementById("wcagLevel");
+      const preview = document.getElementById("previewText");
+
+      preview.style.color = textColor;
+      preview.style.backgroundColor = bgColor;
+      result.textContent = `Contrast Ratio: ${ratio}`;
+      wcag.textContent = `WCAG Level: ${wcagLevel(ratio)}`;
+
+      // change box glow based on pass/fail
+      preview.style.boxShadow = ratio >= 4.5
+        ? "0 0 15px rgba(0,200,100,0.3)"
+        : "0 0 15px rgba(255,0,0,0.3)";
+    }
+
+    function copyContrast() {
+      const text = document.getElementById("contrastResult").textContent;
+      navigator.clipboard.writeText(text);
+      const btn = event.target;
+      btn.textContent = "✅ Copied!";
+      setTimeout(() => (btn.textContent = "📋 Copy Ratio"), 2000);
+    }
+
+    // Live update preview on color change
+    document.querySelectorAll("input[type='color']").forEach(el => {
+      el.addEventListener("input", checkContrast);
+    });
+
+    // Run once on load
+    window.onload = checkContrast;
+  </script>
+
+</body>
+</html>
