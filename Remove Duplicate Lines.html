@@ -77,33 +77,35 @@
 <script>
 function removeDuplicates() {
   const textBoxElement = document.getElementById("textBox");
-  
-  // Get raw HTML and replace <div>, <br> tags with line breaks
-  let content = textBoxElement.innerHTML
-    .replace(/<div><br><\/div>/g, '\n')
-    .replace(/<div>/g, '\n')
-    .replace(/<br>/g, '\n')
-    .replace(/<\/div>/g, '')
-    .replace(/&nbsp;/g, ' ')
-    .trim();
 
-  const lines = content.split(/\r?\n/); // split safely across OS
+  // 🔹 1. Get plain text content correctly
+  // innerText handles line breaks properly for <div> and <br>
+  let content = textBoxElement.innerText.trim();
 
+  if (!content) {
+    alert("Please enter some text first.");
+    return;
+  }
+
+  // 🔹 2. Normalize line breaks (Windows/Linux)
+  const lines = content.split(/\r?\n/);
+
+  // 🔹 3. Remove duplicates (case-insensitive)
   const seen = new Set();
   const uniqueLines = [];
 
   for (let line of lines) {
-    const trimmedLine = line.trim();
-    if (trimmedLine === "") continue;
+    const trimmed = line.trim();
+    if (trimmed === "") continue;
 
-    const key = trimmedLine.toLowerCase();
+    const key = trimmed.toLowerCase();
     if (!seen.has(key)) {
       seen.add(key);
-      uniqueLines.push(trimmedLine);
+      uniqueLines.push(trimmed);
     }
   }
 
-  // Update the box safely
+  // 🔹 4. Display cleaned text back
   textBoxElement.innerText = uniqueLines.join("\n");
   textBoxElement.focus();
 }
