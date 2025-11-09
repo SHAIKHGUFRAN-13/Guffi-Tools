@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Time Zone Converter</title>
+  <style>
+    body {
+      font-family: "Poppins", sans-serif;
+      background: #eef8ff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+    }
+
+    .container {
+      background: #fff;
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 123, 255, 0.15);
+      max-width: 400px;
+      width: 90%;
+      text-align: center;
+      transition: 0.3s;
+    }
+
+    .container:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 18px rgba(0, 123, 255, 0.25);
+    }
+
+    h2 {
+      color: #007bff;
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      margin-top: 12px;
+      text-align: left;
+      font-weight: 500;
+      color: #333;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      font-size: 16px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      box-sizing: border-box;
+      transition: 0.2s;
+    }
+
+    input:focus, select:focus {
+      border-color: #007bff;
+      box-shadow: 0 0 4px rgba(0, 123, 255, 0.3);
+      outline: none;
+    }
+
+    button {
+      margin-top: 20px;
+      padding: 12px 20px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+      width: 100%;
+      transition: 0.2s;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+      transform: scale(1.03);
+    }
+
+    .result {
+      margin-top: 20px;
+      font-size: 18px;
+      font-weight: 600;
+      color: #333;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Time Zone Converter</h2>
+
+    <label for="dateInput">Select Date & Time</label>
+    <input type="datetime-local" id="dateInput" />
+
+    <label for="fromZone">From Time Zone</label>
+    <select id="fromZone"></select>
+
+    <label for="toZone">To Time Zone</label>
+    <select id="toZone"></select>
+
+    <button onclick="convertTime()">Convert</button>
+
+    <div class="result" id="outputResult"></div>
+  </div>
+
+  <script>
+    const timeZones = Intl.supportedValuesOf("timeZone");
+    const fromZone = document.getElementById("fromZone");
+    const toZone = document.getElementById("toZone");
+
+    timeZones.forEach(zone => {
+      const opt1 = document.createElement("option");
+      const opt2 = document.createElement("option");
+      opt1.value = opt2.value = zone;
+      opt1.textContent = opt2.textContent = zone;
+      fromZone.appendChild(opt1);
+      toZone.appendChild(opt2);
+    });
+
+    // Default zones
+    fromZone.value = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    toZone.value = "UTC";
+
+    function convertTime() {
+      const input = document.getElementById("dateInput").value;
+      const from = fromZone.value;
+      const to = toZone.value;
+      const output = document.getElementById("outputResult");
+
+      if (!input) {
+        output.textContent = "Please select a date and time.";
+        return;
+      }
+
+      const date = new Date(input);
+      const utcMillis = date.getTime() - getTimeZoneOffsetMillis(from, date);
+      const targetDate = new Date(utcMillis + getTimeZoneOffsetMillis(to, date));
+
+      output.textContent = `Converted Time: ${targetDate.toLocaleString()} (${to})`;
+    }
+
+    function getTimeZoneOffsetMillis(tz, date) {
+      const options = { timeZone: tz, year: "numeric", month: "2-digit", day: "2-digit",
+                        hour: "2-digit", minute: "2-digit", second: "2-digit" };
+      const formatter = new Intl.DateTimeFormat([], options);
+      const parts = formatter.formatToParts(date);
+      const values = Object.fromEntries(parts.map(p => [p.type, p.value]));
+      const local = new Date(`${values.year}-${values.month}-${values.day}T${values.hour}:${values.minute}:${values.second}`);
+      return local.getTime() - date.getTime();
+    }
+  </script>
+</body>
+</html>
