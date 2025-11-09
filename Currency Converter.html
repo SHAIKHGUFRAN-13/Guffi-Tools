@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Live Currency Converter</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4faff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            background: #fff;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(0, 123, 255, 0.15);
+            text-align: center;
+            width: 90%;
+            max-width: 450px;
+        }
+
+        h1 {
+            color: #007bff;
+            margin-bottom: 20px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            box-sizing: border-box; /* Ensures padding doesn't widen the elements */
+        }
+
+        button {
+            background-color: #007bff;
+            color: #fff;
+            padding: 12px 20px;
+            border: none;
+            font-size: 16px;
+            border-radius: 10px;
+            cursor: pointer;
+            width: 100%;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        #status {
+            margin-top: 15px;
+            font-weight: 500;
+            color: #666;
+            min-height: 20px;
+        }
+
+        .result {
+            margin-top: 20px;
+            font-weight: bold;
+            font-size: 18px;
+            color: #28a745;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Live Currency Converter 💱</h1>
+        <div id="status">Loading currencies...</div>
+
+        <input type="number" id="amount" placeholder="Enter amount" value="100" />
+        
+        <label for="fromCurrency" style="display:block; text-align: left; font-size: 14px; margin-top: 5px;">From Currency:</label>
+        <select id="fromCurrency" disabled>
+            <option value="">Loading...</option>
+        </select>
+
+        <label for="toCurrency" style="display:block; text-align: left; font-size: 14px; margin-top: 5px;">To Currency:</label>
+        <select id="toCurrency" disabled>
+            <option value="">Loading...</option>
+        </select>
+
+        <button onclick="convertCurrency()" id="convertBtn" disabled>Convert</button>
+
+        <div class="result" id="result"></div>
+    </div>
+
+    <script>
+        // --- अपनी API Key यहाँ बदलें (Replace your API Key here) ---
+        const API_KEY = 'd9c0b4be8bf77e3140475b1e'; 
+        const BASE_URL = `https://v6.exchangerate-api.com/v6/d9c0b4be8bf77e3140475b1e`;
+        // -------------------------------------------------------------
+
+        const fromCurrencySelect = document.getElementById("fromCurrency");
+        const toCurrencySelect = document.getElementById("toCurrency");
+        const amountInput = document.getElementById("amount");
+        const resultDiv = document.getElementById("result");
+        const statusDiv = document.getElementById("status");
+        const convertBtn = document.getElementById("convertBtn");
+
+
+        // 1. करेंसी लिस्ट लोड करना (Function to load the currency list)
+        async function loadCurrencies() {
+            statusDiv.textContent = 'Fetching currency list...';
+            try {
+                // API call to get all supported currencies
+                const response = await fetch(`${BASE_URL}/codes`);
+                const data = await response.json();
+
+                if (data.result !== 'success') {
+                    throw new Error(data['error-type'] || 'Failed to fetch currency list.');
+                }
+
+                const supportedCodes = data.supported_codes;
+
+                // Populate the dropdown menus
+                supportedCodes.forEach(([code, name]) => {
+                    const optionFrom = new Option(`${code} - ${name}`, code);
+                    const optionTo = new Option(`${code} - ${name}`, code);
+                    
+                    fromCurrencySelect.add(optionFrom);
+                    toCurrencySelect.add(optionTo);
+                });
+
+                // Set default selections
+                fromCurrencySelect.value = 'USD';
+                toCurrencySelect.value = 'INR';
+
+                // Enable inputs and button
+                fromCurrencySelect.disabled = false;
+                toCurrencySelect.disabled = false;
+                convertBtn.disabled = false;
+
+                statusDiv.textContent = 'Currencies loaded successfully.';
+                // Run an initial conversion
+                convertCurrency();
+
+            } catch (error) {
+                statusDiv.textContent = `Error loading currencies: ${error.message}. Please check your API Key.`;
+                console.error("Currency Load Error:", error);
+            }
+        }
+
+
+        // 2. मुद्रा परिवर्तित करना (Function to convert currency)
+        async function convertCurrency() {
+            const amount = parseFloat(amountInput.value);
+            const from = fromCurrencySelect.value;
+            const to = toCurrencySelect.value;
+
+            resultDiv.textContent = '';
+            
+            if (!amount || amount <= 0) {
+                resultDiv.textContent = "Please enter a valid amount.";
+                return;
+            }
+
+            statusDiv.textContent = `Converting ${from} to ${to}...`;
+            convertBtn.disabled = true;
+
+            try {
+                // API call for specific conversion rates (using 'from' as the base)
+                const response = await fetch(`${BASE_URL}/latest/${from}`);
+                const data = await response.json();
+
+                if (data.result !== 'success') {
+                    throw new Error(data['error-type'] || 'Conversion failed.');
+                }
+                
+                const rate = data.conversion_rates[to];
+                
+                if (rate === undefined) {
+                     throw new Error(`Rate for ${to} not found.`);
+                }
+                
+                const convertedAmount = (amount * rate).toFixed(2);
+
+                resultDiv.textContent = 
+                    `${amount.toLocaleString()} ${from} = ${convertedAmount.toLocaleString()} ${to}`;
+                
+                statusDiv.textContent = `Rate updated. (Last Base: ${from})`;
+
+            } catch (error) {
+                statusDiv.textContent = `Conversion Error: ${error.message}`;
+                resultDiv.textContent = "Conversion failed due to API error.";
+                console.error("Conversion Error:", error);
+            } finally {
+                convertBtn.disabled = false;
+            }
+        }
+
+        // Initialize the app
+        loadCurrencies();
+    </script>
+
+</body>
+</html>
