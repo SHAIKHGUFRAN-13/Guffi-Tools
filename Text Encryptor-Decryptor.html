@@ -1,0 +1,173 @@
+ज़रूर\! यहाँ **सीज़र सिफर (Caesar Cipher)** एन्क्रिप्शन और डिक्रिप्शन का पूरा कोड दिया गया है, जिसमें मैंने **मॉड्यूलो ऑपरेशन** को और अधिक मज़बूत (`mod()`) बनाया है ताकि यह नकारात्मक शिफ्ट (डिक्रिप्शन) के साथ हमेशा सही ढंग से काम करे।
+
+-----
+
+## 🔒 टेक्स्ट एन्क्रिप्टर/डिक्रिप्टर (Full Code)
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text Encryptor/Decryptor Tool (Caesar Cipher)</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f0f8ff;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            background: #fff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            max-width: 500px;
+            text-align: center;
+        }
+
+        h2 {
+            color: #007bff;
+            margin-bottom: 20px;
+        }
+
+        #textBox {
+            width: 100%;
+            min-height: 150px;
+            padding: 15px;
+            font-size: 16px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            background: #fff;
+            margin-bottom: 15px;
+            box-sizing: border-box;
+            outline: none;
+            text-align: left;
+            white-space: pre-wrap;
+            resize: vertical;
+        }
+
+        button {
+            padding: 12px 20px;
+            font-size: 16px;
+            border: none;
+            background-color: #007bff;
+            color: white;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 5px;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        #output {
+            font-size: 16px;
+            margin-top: 20px;
+            color: #333;
+            font-weight: bold;
+        }
+
+        .input-label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+
+        #shift {
+            width: 80px;
+            padding: 8px;
+            margin-bottom: 15px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>Text Encryptor/Decryptor (Caesar Cipher) 🔑</h2>
+
+        <div id="textBox" contenteditable="true" placeholder="Enter your secret message here..."></div>
+
+        <label class="input-label" for="shift">Enter Shift Value (1-25):</label>
+        <input type="number" id="shift" value="3" min="1" max="25" />
+        
+        <div>
+            <button onclick="encryptText()">Encrypt Text</button>
+            <button onclick="decryptText()">Decrypt Text</button>
+        </div>
+
+        <div id="output"></div>
+    </div>
+
+    <script>
+        // यह फ़ंक्शन नकारात्मक परिणामों को भी सकारात्मक बना देता है (उदाहरण के लिए -3 % 26 = 23)
+        function mod(n, m) {
+            return ((n % m) + m) % m;
+        }
+
+        function caesarCipher(str, shift) {
+            // शिफ्ट वैल्यू को 26 के भीतर सामान्य करें
+            shift = mod(shift, 26); 
+
+            return str.split('')
+                .map(char => {
+                    const charCode = char.charCodeAt(0);
+                    
+                    if (char >= 'a' && char <= 'z') {
+                        // छोटे अक्षरों के लिए
+                        return String.fromCharCode(mod(charCode - 97 + shift, 26) + 97);
+                    } else if (char >= 'A' && char <= 'Z') {
+                        // बड़े अक्षरों के लिए
+                        return String.fromCharCode(mod(charCode - 65 + shift, 26) + 65);
+                    } else {
+                        // अन्य वर्णों को अपरिवर्तित रखें
+                        return char;
+                    }
+                })
+                .join('');
+        }
+
+        function encryptText() {
+            const content = document.getElementById("textBox").innerText.trim();
+            const shiftValue = parseInt(document.getElementById("shift").value);
+
+            if (!content) {
+                document.getElementById("output").innerText = "Please enter text to encrypt.";
+                return;
+            }
+
+            // एन्क्रिप्शन के लिए सकारात्मक शिफ्ट पास करें
+            const encryptedText = caesarCipher(content, shiftValue);
+            document.getElementById("output").innerText = "Encrypted Text: " + encryptedText;
+        }
+
+        function decryptText() {
+            const content = document.getElementById("textBox").innerText.trim();
+            const shiftValue = parseInt(document.getElementById("shift").value);
+
+            if (!content) {
+                document.getElementById("output").innerText = "Please enter text to decrypt.";
+                return;
+            }
+
+            // डिक्रिप्शन के लिए नकारात्मक शिफ्ट पास करें (जो mod() के कारण सही काम करेगा)
+            const decryptedText = caesarCipher(content, -shiftValue);
+            document.getElementById("output").innerText = "Decrypted Text: " + decryptedText;
+        }
+    </script>
+
+</body>
+</html>
+```
