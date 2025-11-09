@@ -1,120 +1,113 @@
-
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Remove Duplicate Lines Tool</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f0f8ff;
-      padding: 20px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      min-height: 100vh;
-      margin: 0;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Remove Duplicate Lines Tool</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background: #f0f8ff;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+  }
 
-    .container {
-      background: #fff;
-      padding: 30px;
-      border-radius: 12px;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-      width: 90%;
-      max-width: 500px;
-      text-align: center;
-    }
+  .container {
+    background: #fff;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    width: 90%;
+    max-width: 500px;
+    text-align: center;
+  }
 
-    h2 {
-      color: #007bff;
-      margin-bottom: 20px;
-    }
+  h2 {
+    color: #007bff;
+    margin-bottom: 20px;
+  }
 
-    /* contenteditable div को स्टाइल करना */
-    #textBox {
-      width: 100%;
-      min-height: 150px;
-      padding: 15px;
-      font-size: 16px;
-      border-radius: 8px;
-      border: 1px solid #ccc;
-      background: #fff;
-      margin-bottom: 15px;
-      box-sizing: border-box;
-      outline: none;
-      text-align: left;
-      white-space: pre-wrap;
-      overflow-y: auto;
-      resize: vertical;
-    }
+  #textBox {
+    width: 100%;
+    min-height: 150px;
+    padding: 15px;
+    font-size: 16px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    background: #fff;
+    margin-bottom: 15px;
+    box-sizing: border-box;
+    outline: none;
+    text-align: left;
+    white-space: pre-wrap;
+    overflow-y: auto;
+  }
 
-    button {
-      padding: 12px 25px;
-      font-size: 16px;
-      border: none;
-      background-color: #007bff;
-      color: white;
-      border-radius: 8px;
-      cursor: pointer;
-      margin-top: 10px;
-      transition: background-color 0.3s;
-    }
+  button {
+    padding: 12px 25px;
+    font-size: 16px;
+    border: none;
+    background-color: #007bff;
+    color: white;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: background-color 0.3s;
+  }
 
-    button:hover {
-      background-color: #0056b3;
-    }
-  </style>
+  button:hover {
+    background-color: #0056b3;
+  }
+</style>
 </head>
 <body>
 
-  <div class="container">
-    <h2>Remove Duplicate Lines (Case Insensitive) ✂️</h2>
+<div class="container">
+  <h2>Remove Duplicate Lines (Case Insensitive) ✂️</h2>
 
-    <div id="textBox" contenteditable="true" placeholder="Paste or type lines here..."></div>
+  <div id="textBox" contenteditable="true" placeholder="Paste or type lines here..."></div>
 
-    <button onclick="removeDuplicates()">Remove Duplicates</button>
-  </div>
+  <button onclick="removeDuplicates()">Remove Duplicates</button>
+</div>
 
-  <script>
-    function removeDuplicates() {
-      var textBoxElement = document.getElementById("textBox");
-      var content = textBoxElement.innerText;
-      
-      // 1. कंटेंट को नई लाइन के आधार पर ऐरे में विभाजित करें
-      var lines = content.split('\n');
-      
-      // तुलना किए गए (lowercase) टेक्स्ट को ट्रैक करने के लिए एक Set
-      const seen = new Set();
-      // अंतिम अद्वितीय लाइनों को स्टोर करने के लिए एक ऐरे
-      const uniqueLines = [];
-      
-      lines.forEach(line => {
-        let trimmedLine = line.trim();
-        
-        // 2. तुलना के लिए trimmed लाइन का lowercase की (key) बनाएँ
-        let comparisonKey = trimmedLine.toLowerCase();
-        
-        // 3. पूरी तरह से खाली लाइनों को छोड़ दें
-        if (trimmedLine === "") {
-             return; 
-        }
+<script>
+function removeDuplicates() {
+  const textBoxElement = document.getElementById("textBox");
+  
+  // Get raw HTML and replace <div>, <br> tags with line breaks
+  let content = textBoxElement.innerHTML
+    .replace(/<div><br><\/div>/g, '\n')
+    .replace(/<div>/g, '\n')
+    .replace(/<br>/g, '\n')
+    .replace(/<\/div>/g, '')
+    .replace(/&nbsp;/g, ' ')
+    .trim();
 
-        // 4. यदि यह key (lowercase) पहले नहीं देखी गई है:
-        if (!seen.has(comparisonKey)) {
-            // key को Set में जोड़ें
-            seen.add(comparisonKey);
-            // और मूल trimmed लाइन को (उसके original case के साथ) आउटपुट ऐरे में जोड़ें
-            uniqueLines.push(trimmedLine); 
-        }
-      });
-      
-      // 5. परिणाम को वापस textBox में दिखाएँ
-      textBoxElement.innerText = uniqueLines.join('\n');
-      textBoxElement.focus();
+  const lines = content.split(/\r?\n/); // split safely across OS
+
+  const seen = new Set();
+  const uniqueLines = [];
+
+  for (let line of lines) {
+    const trimmedLine = line.trim();
+    if (trimmedLine === "") continue;
+
+    const key = trimmedLine.toLowerCase();
+    if (!seen.has(key)) {
+      seen.add(key);
+      uniqueLines.push(trimmedLine);
     }
-  </script>
+  }
+
+  // Update the box safely
+  textBoxElement.innerText = uniqueLines.join("\n");
+  textBoxElement.focus();
+}
+</script>
 
 </body>
 </html>
