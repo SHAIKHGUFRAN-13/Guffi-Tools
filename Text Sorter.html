@@ -79,29 +79,25 @@
     function sortText() {
       const textBoxElement = document.getElementById("textBox");
 
-      // Handle HTML inside contenteditable
-      let content = textBoxElement.innerHTML
-        .replace(/<div><br><\/div>/g, '\n')
-        .replace(/<div>/g, '\n')
-        .replace(/<br>/g, '\n')
-        .replace(/<\/div>/g, '')
-        .replace(/&nbsp;/g, ' ')
-        .trim();
+      // ✅ 1. Get clean text safely (innerText handles line breaks automatically)
+      let content = textBoxElement.innerText.trim();
 
-      if (content.length === 0) {
-        textBoxElement.innerText = "Please enter some text first.";
+      if (!content) {
+        alert("Please enter some text first!");
         return;
       }
 
-      // Split and sort
+      // ✅ 2. Split into lines (normalize newlines)
       const lines = content.split(/\r?\n/);
+
+      // ✅ 3. Clean + sort alphabetically (localeCompare handles Hindi/Unicode also)
       const sortedLines = lines
         .map(line => line.trim())
-        .filter(line => line !== "")
-        .sort((a, b) => a.localeCompare(b)); // locale-aware sorting
+        .filter(line => line.length > 0)
+        .sort((a, b) => a.localeCompare(b, undefined, { sensitivity: "base" }));
 
-      // Show result
-      textBoxElement.innerText = sortedLines.join('\n');
+      // ✅ 4. Show sorted output back
+      textBoxElement.innerText = sortedLines.join("\n");
       textBoxElement.focus();
     }
   </script>
