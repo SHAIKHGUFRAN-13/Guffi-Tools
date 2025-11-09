@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>UUID Generator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #eef8ff;
+      margin: 0;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .container {
+      max-width: 400px;
+      margin: auto;
+      background: #fff;
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 123, 255, 0.15);
+    }
+
+    h2 {
+      color: #007bff;
+    }
+
+    .uuid-box {
+      word-break: break-all;
+      background: #f1f1f1;
+      padding: 12px;
+      border-radius: 8px;
+      margin-top: 20px;
+      font-size: 18px;
+      font-weight: bold;
+      color: #333;
+      transition: all 0.3s ease;
+    }
+
+    button {
+      margin-top: 15px;
+      padding: 10px 20px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    #copyBtn {
+      background-color: #28a745;
+      margin-left: 10px;
+    }
+
+    #copyBtn:hover {
+      background-color: #1e7e34;
+    }
+
+    #downloadBtn {
+      background-color: #ffc107;
+      margin-left: 10px;
+      color: #333;
+    }
+
+    #downloadBtn:hover {
+      background-color: #e0a800;
+    }
+
+    .copied {
+      display: inline-block;
+      margin-top: 10px;
+      color: #28a745;
+      font-weight: bold;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .copied.show {
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>UUID Generator</h2>
+    <button onclick="generateUUID()">Generate UUID</button>
+    <button id="copyBtn" onclick="copyUUID()">Copy</button>
+    <button id="downloadBtn" onclick="downloadUUID()">Download</button>
+
+    <div class="uuid-box" id="uuidOutput">Generating...</div>
+    <div id="copiedMsg" class="copied">✅ Copied to clipboard!</div>
+  </div>
+
+  <script>
+    // Generate a random UUID v4
+    function generateUUID() {
+      const uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+        const r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
+        return v.toString(16);
+      });
+      document.getElementById('uuidOutput').textContent = uuid;
+      document.getElementById('copiedMsg').classList.remove('show');
+    }
+
+    // Copy UUID to clipboard
+    function copyUUID() {
+      const uuidText = document.getElementById('uuidOutput').textContent;
+      navigator.clipboard.writeText(uuidText).then(() => {
+        const msg = document.getElementById('copiedMsg');
+        msg.classList.add('show');
+        setTimeout(() => msg.classList.remove('show'), 1500);
+      });
+    }
+
+    // Download UUID as text file
+    function downloadUUID() {
+      const uuid = document.getElementById('uuidOutput').textContent;
+      const blob = new Blob([uuid], { type: "text/plain;charset=utf-8" });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = "uuid.txt";
+      link.click();
+    }
+
+    // Auto-generate UUID when page loads
+    window.onload = generateUUID;
+  </script>
+</body>
+</html>
