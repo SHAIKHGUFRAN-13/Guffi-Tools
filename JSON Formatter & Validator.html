@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>JSON Formatter & Validator Tool</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f0f8ff;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+    }
+
+    .container {
+      background: #fff;
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      width: 90%;
+      max-width: 650px;
+    }
+
+    h2 {
+      color: #007bff;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    #textBox {
+      width: 100%;
+      min-height: 180px;
+      padding: 12px;
+      font-size: 16px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      background: #fafafa;
+      margin-bottom: 15px;
+      outline: none;
+      white-space: pre-wrap;
+      overflow-y: auto;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      font-size: 16px;
+      border: none;
+      background-color: #007bff;
+      color: white;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: 0.3s;
+      margin-bottom: 10px;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    #output {
+      font-size: 15px;
+      margin-top: 15px;
+      color: #333;
+      white-space: pre-wrap;
+      background: #f8f9fa;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 12px;
+      overflow-x: auto;
+    }
+
+    #error {
+      color: red;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+    #copyBtn {
+      display: none;
+      background-color: #28a745;
+    }
+
+    #copyBtn:hover {
+      background-color: #218838;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>JSON Formatter & Validator Tool 🧩</h2>
+
+    <div id="textBox" contenteditable="true" placeholder="Paste your JSON code here..."></div>
+
+    <button onclick="formatAndValidateJSON()">Format & Validate JSON</button>
+    <button id="copyBtn" onclick="copyOutput()">Copy Formatted JSON</button>
+
+    <div id="error"></div>
+    <div id="output"></div>
+  </div>
+
+  <script>
+    function formatAndValidateJSON() {
+      const content = document.getElementById("textBox").innerText.trim();
+      const errorElement = document.getElementById("error");
+      const outputElement = document.getElementById("output");
+      const copyBtn = document.getElementById("copyBtn");
+
+      errorElement.innerText = '';
+      outputElement.innerText = '';
+      copyBtn.style.display = 'none';
+
+      if (!content) {
+        errorElement.innerText = "⚠️ Please paste valid JSON data.";
+        return;
+      }
+
+      try {
+        const jsonObject = JSON.parse(content);
+        const formattedJSON = JSON.stringify(jsonObject, null, 2);
+
+        outputElement.innerText = formattedJSON;
+        copyBtn.style.display = 'block';
+      } catch (e) {
+        errorElement.innerText = "❌ Invalid JSON: " + e.message;
+      }
+    }
+
+    function copyOutput() {
+      const outputText = document.getElementById("output").innerText;
+      navigator.clipboard.writeText(outputText);
+      alert("✅ Formatted JSON copied to clipboard!");
+    }
+  </script>
+</body>
+</html>
