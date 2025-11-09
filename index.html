@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guffi Tools - Your Daily Tools, All in One Place</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <style>
+        :root {
+            --bs-blue: #007bff;
+            --bs-light-blue: #e6f0ff;
+            --bs-font-sans-serif: 'Inter', sans-serif;
+        }
+        body {
+            font-family: var(--bs-font-sans-serif);
+            background-color: #f8f9fa; /* Light gray background */
+        }
+        /* Sticky Header */
+        .navbar {
+            box-shadow: 0 2px 4px rgba(0,0,0,.04);
+        }
+        /* Hero Section Styling */
+        .hero-section {
+            padding: 80px 15px;
+            background-color: #ffffff;
+            text-align: center;
+        }
+        .hero-section h1 {
+            font-weight: 700;
+            color: #343a40;
+            margin-bottom: 1rem;
+        }
+        /* Search Bar Styling */
+        .search-bar-container {
+            padding: 40px 15px;
+            background-color: #ffffff;
+            border-bottom: 1px solid #e9ecef;
+        }
+        .form-control.search-input {
+            height: 55px;
+            border-radius: 50px;
+            box-shadow: 0 4px 10px rgba(0,0,0,.08);
+            border: 1px solid var(--bs-blue);
+        }
+        /* Tool Card Styling */
+        .tool-card {
+            background: #ffffff;
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,.08);
+            transition: transform 0.2s, box-shadow 0.2s;
+            overflow: hidden;
+            height: 100%; /* Important for grid alignment */
+        }
+        .tool-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0,0,0,.15);
+        }
+        .tool-icon {
+            color: var(--bs-blue);
+            font-size: 1.5rem;
+        }
+        .btn-use-tool {
+            background-color: var(--bs-blue);
+            border-color: var(--bs-blue);
+            border-radius: 8px;
+            transition: background-color 0.2s;
+        }
+        .btn-use-tool:hover {
+            background-color: #0056b3;
+            border-color: #0056b3;
+        }
+        /* Footer Styling */
+        footer {
+            background-color: #343a40;
+            color: #ffffff;
+            padding: 40px 0;
+        }
+        footer a {
+            color: #adb5bd;
+            text-decoration: none;
+        }
+        footer a:hover {
+            color: var(--bs-blue);
+        }
+        /* Tool Section Headings */
+        .tool-section-heading {
+            color: var(--bs-blue);
+            font-weight: 700;
+            margin-top: 50px;
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-light bg-white sticky-top">
+        <div class="container">
+            <a class="navbar-brand text-primary fw-bold fs-3" href="#">Guffi Tools</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item"><a class="nav-link fw-bold" href="#">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#tools">Tools</a></li>
+                    <li class="nav-item"><a class="nav-link" href="https://instagram.com/code_fuel_" target="_blank"><i class="bi bi-instagram me-1"></i>Contact</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <header class="hero-section">
+        <div class="container">
+            <h1 class="display-4">Your Daily Tools, All in One Place</h1>
+            <p class="lead text-muted mb-4">Convert, calculate, compress, and simplify your everyday tasks — fast and free.</p>
+            
+            <a href="#search-bar" class="btn btn-primary btn-lg fw-bold rounded-pill shadow-lg mb-5">Explore Tools</a>
+
+            <div class="d-flex justify-content-center gap-4 text-primary fs-2">
+                <i class="bi bi-image" title="Image Tools"></i>
+                <i class="bi bi-film" title="Video Tools"></i>
+                <i class="bi bi-file-earmark-text" title="Document Tools"></i>
+                <i class="bi bi-calculator" title="Calculator Tools"></i>
+                <i class="bi bi-code-slash" title="Web/Dev Tools"></i>
+            </div>
+        </div>
+    </header>
+
+    <div class="search-bar-container" id="search-bar">
+        <div class="container">
+            <input type="text" class="form-control search-input" placeholder="Search a tool by name or keyword..." id="toolSearchInput">
+        </div>
+    </div>
+
+    <main class="container py-5" id="tools">
+        
+        <script>
+            const createToolCard = (name, description, iconClass) => `
+                <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4 tool-item" data-name="${name.toLowerCase()}">
+                    <div class="card tool-card p-3">
+                        <div class="d-flex align-items-center mb-2">
+                            <i class="tool-icon ${iconClass} me-3"></i>
+                            <h5 class="card-title fw-bold mb-0">${name}</h5>
+                        </div>
+                        <p class="card-text text-muted small">${description}</p>
+                        <a href="#" class="btn btn-use-tool btn-sm mt-2 fw-bold">Use Tool</a>
+                    </div>
+                </div>
+            `;
+        </script>
+
+        <h2 class="tool-section-heading mt-0">🖼 Image Tools</h2>
+        <p class="text-muted mb-4">Edit, compress, and transform your images quickly and without losing quality.</p>
+        <div class="row" id="ImageToolsSection"></div>
+
+        <h2 class="tool-section-heading">📹 Video Tools</h2>
+        <p class="text-muted mb-4">Quickly convert and optimize your video files for web and mobile use.</p>
+        <div class="row" id="VideoToolsSection"></div>
+
+        <h2 class="tool-section-heading">📄 Document Tools</h2>
+        <p class="text-muted mb-4">The ultimate toolkit for managing, editing, and securing your PDF and document files.</p>
+        <div class="row" id="DocumentToolsSection"></div>
+
+        <h2 class="tool-section-heading">🧮 Calculator Tools</h2>
+        <p class="text-muted mb-4">A variety of specialized calculators for finance, health, and math problems.</p>
+        <div class="row" id="CalculatorToolsSection"></div>
+        
+        <h2 class="tool-section-heading">🔤 Text Tools</h2>
+        <p class="text-muted mb-4">Manipulate, analyze, and secure your text with simple, fast utilities.</p>
+        <div class="row" id="TextToolsSection"></div>
+        
+        <h2 class="tool-section-heading">🌐 Web/Developer Tools</h2>
+        <p class="text-muted mb-4">Essential utilities for programmers, designers, and web masters.</p>
+        <div class="row" id="WebDevToolsSection"></div>
+
+        <h2 class="tool-section-heading">🎨 Color Tools</h2>
+        <p class="text-muted mb-4">Design and refine your color palettes for any project.</p>
+        <div class="row" id="ColorToolsSection"></div>
+
+        <h2 class="tool-section-heading">🌍 SEO & Marketing Tools</h2>
+        <p class="text-muted mb-4">Quick tools to optimize your content and analyze web pages.</p>
+        <div class="row" id="SEOToolsSection"></div>
+
+        <h2 class="tool-section-heading">🛠️ Utility Tools</h2>
+        <p class="text-muted mb-4">Everyday necessities for quick conversions and data generation.</p>
+        <div class="row" id="UtilityToolsSection"></div>
+
+    </main>
+
+    <footer>
+        <div class="container text-center">
+            <h4 class="text-white fw-bold">Guffi Tools</h4>
+            <p class="text-white-50 small mb-4">Smart Tools for Smart Creators.</p>
+            
+            <p class="mb-2">
+                <a href="https://instagram.com/code_fuel_" target="_blank" class="mx-2"><i class="bi bi-instagram me-1"></i>Contact: @code_fuel_</a>
+            </p>
+
+            <p class="small mb-0">
+                <a href="#" class="mx-2">Privacy Policy</a> | 
+                <a href="#" class="mx-2">Terms of Use</a>
+            </p>
+            <p class="text-white-50 small mt-2">&copy; 2024 Guffi Tools. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        // Tool Data Structure
+        const toolData = [
+            // Image Tools
+            { name: "Image Converter", desc: "Convert JPG, PNG, WEBP, and more.", icon: "bi-image", section: "ImageToolsSection" },
+            { name: "Image Compressor", desc: "Reduce file size without noticeable quality loss.", icon: "bi-file-zip", section: "ImageToolsSection" },
+            { name: "Image Resizer", desc: "Change the dimensions of your images easily.", icon: "bi-aspect-ratio", section: "ImageToolsSection" },
+            { name: "Image Cropper", desc: "Crop images to any size or aspect ratio.", icon: "bi-crop", section: "ImageToolsSection" },
+            { name: "Image to Text (OCR)", desc: "Extract text directly from images.", icon: "bi-card-text", section: "ImageToolsSection" },
+            { name: "Image Rotator/Flipper", desc: "Rotate images 90, 180 degrees or flip them.", icon: "bi-arrow-clockwise", section: "ImageToolsSection" },
+            
+            // Video Tools (NEW)
+            { name: "Video Converter", desc: "Convert video between formats like MP4, AVI, MOV.", icon: "bi-film", section: "VideoToolsSection" },
+            { name: "Video Compressor", desc: "Reduce video file size for sharing and web use.", icon: "bi-collection-play", section: "VideoToolsSection" },
+
+            // Document Tools
+            { name: "PDF to Word / Word to PDF", desc: "Seamlessly convert documents in both directions.", icon: "bi-file-earmark-pdf", section: "DocumentToolsSection" },
+            { name: "PDF Compressor", desc: "Reduce the size of your PDF files instantly.", icon: "bi-file-earmark-zip", section: "DocumentToolsSection" },
+            { name: "PDF Merger & Splitter", desc: "Combine multiple PDFs or split a single file.", icon: "bi-files", section: "DocumentToolsSection" },
+            { name: "Document Converter", desc: "Convert between various document formats.", icon: "bi-file-earmark-diff", section: "DocumentToolsSection" },
+            { name: "PDF Lock/Unlock", desc: "Add or remove password protection from PDFs.", icon: "bi-lock", section: "DocumentToolsSection" },
+            { name: "eSign PDF", desc: "Easily add digital signatures to your documents.", icon: "bi-vector-pen", section: "DocumentToolsSection" },
+
+            // Calculator Tools
+            { name: "Scientific Calculator", desc: "Advanced functions for complex mathematical equations.", icon: "bi-calculator", section: "CalculatorToolsSection" },
+            { name: "Age Calculator", desc: "Determine a person's age based on their birth date.", icon: "bi-calendar-date", section: "CalculatorToolsSection" },
+            { name: "BMI Calculator", desc: "Calculate your Body Mass Index quickly.", icon: "bi-bandaid", section: "CalculatorToolsSection" },
+            { name: "Loan EMI Calculator", desc: "Estimate your monthly loan payments.", icon: "bi-cash-stack", section: "CalculatorToolsSection" },
+            { name: "GST Calculator", desc: "Calculate Goods and Services Tax instantly.", icon: "bi-currency-rupee", section: "CalculatorToolsSection" },
+            { name: "Currency Converter", desc: "Real-time exchange rates for global currencies.", icon: "bi-currency-exchange", section: "CalculatorToolsSection" },
+            
+            // Text Tools
+            { name: "Text Case Converter", desc: "Change text to upper, lower, title, or sentence case.", icon: "bi-text-paragraph", section: "TextToolsSection" },
+            { name: "Word & Character Counter", desc: "Count words and characters in your text.", icon: "bi-hash", section: "TextToolsSection" },
+            { name: "Remove Duplicate Lines", desc: "Clean up lists by removing repeated lines.", icon: "bi-eraser", section: "TextToolsSection" },
+            { name: "Text Sorter", desc: "Alphabetize or reverse-sort lists of text.", icon: "bi-sort-alpha-down", section: "TextToolsSection" },
+            { name: "Text Reverser", desc: "Reverse the order of letters or words.", icon: "bi-arrow-left-right", section: "TextToolsSection" },
+            { name: "Text Encryptor/Decryptor", desc: "Simple encryption/decryption for private text.", icon: "bi-file-lock", section: "TextToolsSection" },
+
+            // Web/Developer Tools
+            { name: "HTML/CSS/JS Minifier", desc: "Reduce file size of code for faster loading.", icon: "bi-filetype-html", section: "WebDevToolsSection" },
+            { name: "JSON Formatter & Validator", desc: "Pretty-print and check JSON syntax.", icon: "bi-braces", section: "WebDevToolsSection" },
+            { name: "Base64 Encoder/Decoder", desc: "Encode and decode Base64 strings instantly.", icon: "bi-key", section: "WebDevToolsSection" },
+            { name: "URL Encoder/Decoder", desc: "Escape or unescape URL characters.", icon: "bi-link-45deg", section: "WebDevToolsSection" },
+            { name: "Color Picker & Converter", desc: "Select colors and convert formats (HEX, RGB, HSL).", icon: "bi-palette", section: "WebDevToolsSection" },
+            { name: "Regex Tester", desc: "Test and build regular expressions live.", icon: "bi-funnel-fill", section: "WebDevToolsSection" },
+
+            // Color Tools
+            { name: "Color Picker from Image", desc: "Extract color codes directly from uploaded images.", icon: "bi-eyedropper", section: "ColorToolsSection" },
+            { name: "HEX to RGB Converter", desc: "Convert between common color codes.", icon: "bi-hexagon", section: "ColorToolsSection" },
+            { name: "Gradient Generator", desc: "Create smooth CSS gradients easily.", icon: "bi-rainbow", section: "ColorToolsSection" },
+            { name: "Contrast Checker", desc: "Verify color contrast against WCAG standards.", icon: "bi-lightbulb", section: "ColorToolsSection" },
+            { name: "Palette Generator", desc: "Generate harmonious color schemes.", icon: "bi-puzzle", section: "ColorToolsSection" },
+            { name: "Color Blindness Simulator", desc: "Check how your design looks to color-blind users.", icon: "bi-eyeglasses", section: "ColorToolsSection" },
+
+            // SEO & Marketing Tools
+            { name: "Keyword Density Checker", desc: "Analyze the frequency of keywords in text.", icon: "bi-search", section: "SEOToolsSection" },
+            { name: "Meta Tag Analyzer", desc: "Check your page's title and description tags.", icon: "bi-tag", section: "SEOToolsSection" },
+            { name: "Word Counter", desc: "Count words and characters for content length requirements.", icon: "bi-pencil-square", section: "SEOToolsSection" },
+            
+            // Utility Tools
+            { name: "QR Code Generator & Scanner", desc: "Create and read QR codes quickly.", icon: "bi-qr-code-scan", section: "UtilityToolsSection" },
+            { name: "Barcode Generator", desc: "Generate various linear barcode types.", icon: "bi-upc-scan", section: "UtilityToolsSection" },
+            { name: "UUID Generator", desc: "Instantly generate universally unique identifiers.", icon: "bi-puzzle-fill", section: "UtilityToolsSection" },
+            { name: "Unit Converter", desc: "Convert between weight, length, volume, and more.", icon: "bi-rulers", section: "UtilityToolsSection" },
+            { name: "Time Zone Converter", desc: "Quickly find the time difference between two locations.", icon: "bi-clock", section: "UtilityToolsSection" },
+            { name: "Random Number/Password Generator", desc: "Generate strong, random data for security or testing.", icon: "bi-shuffle", section: "UtilityToolsSection" }
+        ];
+
+        // 1. Initial Render Function
+        function renderTools() {
+            toolData.forEach(tool => {
+                const cardHtml = createToolCard(tool.name, tool.desc, tool.icon);
+                document.getElementById(tool.section).innerHTML += cardHtml;
+            });
+        }
+        
+        // 2. Live Search Filter Function
+        function filterTools() {
+            const searchTerm = document.getElementById('toolSearchInput').value.toLowerCase();
+            const toolItems = document.querySelectorAll('.tool-item');
+            
+            // Hide/Show logic for tool cards
+            toolItems.forEach(item => {
+                const toolName = item.dataset.name;
+                if (toolName.includes(searchTerm)) {
+                    item.style.display = 'block'; // Show the card
+                } else {
+                    item.style.display = 'none'; // Hide the card
+                }
+            });
+
+            // Hide/Show logic for sections (headings and subheadings)
+            const sections = document.querySelectorAll('.tool-section-heading, main > p.text-muted.mb-4');
+            sections.forEach(section => {
+                // Find the corresponding tool row
+                const toolRow = section.nextElementSibling.classList.contains('row') ? section.nextElementSibling : null;
+                
+                if (toolRow) {
+                    const sectionCards = toolRow.querySelectorAll('.tool-item[style*="block"]');
+                    const isSectionVisible = sectionCards.length > 0;
+                    
+                    if (searchTerm === '') {
+                        section.style.display = 'block'; // Show all sections when search is empty
+                    } else {
+                        section.style.display = isSectionVisible ? 'block' : 'none';
+                    }
+                }
+            });
+        }
+
+        // Initialize and setup event listeners
+        document.addEventListener('DOMContentLoaded', () => {
+            renderTools();
+            document.getElementById('toolSearchInput').addEventListener('keyup', filterTools);
+        });
+    </script>
+</body>
+</html>
